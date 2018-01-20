@@ -1,4 +1,6 @@
-# Cryptographic hashing functions for Dart
+## Cryptographic hashing functions for Dart
+
+[![Build Status](https://travis-ci.org/dart-lang/crypto.svg?branch=master)](https://travis-ci.org/dart-lang/crypto)
 
 A set of cryptographic hashing functions implemented in pure Dart
 
@@ -18,56 +20,41 @@ To hash a list of bytes, invoke the [`convert`][convert] method on the
 objects.
 
 ```dart
-import 'package:crypto/crypto.dart';
 import 'dart:convert'; // for the UTF8.encode method
+import 'package:crypto/crypto.dart';
 
 void main() {
-  var bytes = UTF8.encode("foobar"); // data being hashed
+  var bytes = UTF8.encode('foobar'); // data being hashed
 
   var digest = sha1.convert(bytes);
 
-  print("Digest as bytes: ${digest.bytes}");
-  print("Digest as hex string: $digest");
+  print('Digest as bytes: ${digest.bytes}');
+  print('Digest as hex string: $digest');
 }
 ```
 
-### Digest on chunked input
+### Digest Stream input
 
-If the input data is not available as a _single_ list of bytes, use
-the chunked conversion approach.
+If the input data is a `Stream<List<int>>`:
 
-Invoke the [`startChunkedConversion`][startChunkedConversion] method
-to create a sink for the input data. On the sink, invoke the `add`
-method for each chunk of input data, and invoke the `close` method
-when all the chunks have been added. The digest can then be retrieved
-from the `Sink<Digest>` used to create the input data sink.
 
 ```dart
+import 'dart:async';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
-import 'package:crypto/src/digest_sink.dart';
 
-void main() {
-  var firstChunk = UTF8.encode("foo");
-  var secondChunk = UTF8.encode("bar");
+main() async {
+  var byteStream =
+      new Stream<String>.fromIterable(['foo', 'bar']).transform(UTF8.encoder);
 
-  var ds = new DigestSink();
-  var s = sha1.startChunkedConversion(ds);
-  s.add(firstChunk);
-  s.add(secondChunk); // call `add` for every chunk of input data
-  s.close();
-  var digest = ds.value;
+  var digest = await byteStream
+      .transform(sha1) // Convert to a Stream<Digest>
+      .single; // There is only one
 
-  print("Digest as bytes: ${digest.bytes}");
-  print("Digest as hex string: $digest");
+  print('Digest as bytes: ${digest.bytes}');
+  print('Digest as hex string: $digest');
 }
 ```
-
-The above example uses the `DigestSink` class that comes with the
-_crypto_ package. Its `value` property retrieves the last `Digest`
-that was added to it, which is fine for this purpose since only one
-`Digest` is added to it when the data sink's `close` method was
-invoked.
 
 ### HMAC
 
@@ -78,17 +65,16 @@ hash calculating objects.
 ```dart
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
-import 'package:crypto/src/digest_sink.dart';
 
 void main() {
   var key = UTF8.encode('p@ssw0rd');
-  var bytes = UTF8.encode("foobar");
+  var bytes = UTF8.encode('foobar');
 
   var hmacSha256 = new Hmac(sha256, key); // HMAC-SHA256
   var digest = hmacSha256.convert(bytes);
-  
-  print("HMAC digest as bytes: ${digest.bytes}");
-  print("HMAC digest as hex string: $digest");
+
+  print('HMAC digest as bytes: ${digest.bytes}');
+  print('HMAC digest as hex string: $digest');
 }
 ```
 
