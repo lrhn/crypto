@@ -1,3 +1,7 @@
+## 2.0.3
+
+* Improvements to the README and example.
+
 ## 2.0.2+1
 
 * Fix SDK constraint.
