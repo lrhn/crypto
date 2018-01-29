@@ -1,15 +1,13 @@
-## Cryptographic hashing functions for Dart
-
 [![Build Status](https://travis-ci.org/dart-lang/crypto.svg?branch=master)](https://travis-ci.org/dart-lang/crypto)
 
-A set of cryptographic hashing functions implemented in pure Dart
+A set of cryptographic hashing functions implemented in Dart.
 
 The following hashing algorithms are supported:
 
-* SHA-1
-* SHA-256
-* MD5
-* HMAC (i.e. HMAC-MD5, HMAC-SHA1, HMAC-SHA256)
+* [SHA-1][SHA1]
+* [SHA-256][SHA256]
+* [MD5]
+* [HMAC][Hmac] (i.e. HMAC-MD5, HMAC-SHA1, HMAC-SHA256)
 
 ## Usage
 
@@ -20,7 +18,8 @@ To hash a list of bytes, invoke the [`convert`][convert] method on the
 objects.
 
 ```dart
-import 'dart:convert'; // for the UTF8.encode method
+import 'dart:convert';
+
 import 'package:crypto/crypto.dart';
 
 void main() {
@@ -41,6 +40,7 @@ If the input data is a `Stream<List<int>>`:
 ```dart
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:crypto/crypto.dart';
 
 main() async {
@@ -64,6 +64,7 @@ hash calculating objects.
 
 ```dart
 import 'dart:convert';
+
 import 'package:crypto/crypto.dart';
 
 void main() {
@@ -97,5 +98,4 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 [md5-obj]: https://www.dartdocs.org/documentation/crypto/latest/crypto/md5.html
 [sha1-obj]: https://www.dartdocs.org/documentation/crypto/latest/crypto/sha1.html
 [sha256-obj]: https://www.dartdocs.org/documentation/crypto/latest/crypto/sha256.html
-[startChunkedConversion]: https://www.dartdocs.org/documentation/crypto/latest/crypto/Hash/startChunkedConversion.html
 [tracker]: https://github.com/dart-lang/crypto/issues
